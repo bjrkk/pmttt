@@ -11,7 +11,7 @@ ttt_pm_ordertype <-1/0/1/2>     - This sets the order type for playermodels.
                                    0 will always pick the playermodel depending on the players UserID
                                    1 will pick the randomly picked playermodel from when the player initially spawned.
                                    2 will pick a new random playermodel for every player on a new round.
-ttt_pm_reloadconfig				- Upon execution, it'll reload the configuration file.
+ttt_pm_reloadconfig             - Upon execution, it'll reload the configuration file.
 ```
 
 ## Usage
