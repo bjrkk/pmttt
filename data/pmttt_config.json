@@ -1,32 +1,36 @@
 {
-	"maps": {
-		"gm_construct": {
-			"terror": [
-				"models/player/kleiner.mdl"
-			],
-			"detective": [
-				"models/player/kleiner.mdl"
-			]
-		},
-		"gm_flatgrass": {
-			"terror": [
-				"models/player/kleiner.mdl"
-			],
-			"detective": [
-				"models/player/kleiner.mdl"
-			]
-		}
-	},
+	"traitor": [
+		"models/player/arctic.mdl",
+		"models/player/guerilla.mdl"
+	],
 	"detective": [
+		"models/player/gsg9.mdl",
+		"models/player/gign.mdl",
+		"models/player/sas.mdl",
+		"models/player/urban.mdl"
+	],
+	"innocent": [
 		"models/player/phoenix.mdl",
 		"models/player/arctic.mdl",
 		"models/player/guerilla.mdl",
 		"models/player/leet.mdl"
 	],
-	"terror": [
-		"models/player/phoenix.mdl",
-		"models/player/arctic.mdl",
-		"models/player/guerilla.mdl",
-		"models/player/leet.mdl"
-	]
+	"maps": {
+		"gm_construct": {
+			"detective": [
+				"models/player/kleiner.mdl"
+			],
+			"innocent": [
+				"models/player/kleiner.mdl"
+			]
+		},
+		"gm_flatgrass": {
+			"detective": [
+				"models/player/kleiner.mdl"
+			],
+			"innocent": [
+				"models/player/kleiner.mdl"
+			]
+		}
+	}
 }

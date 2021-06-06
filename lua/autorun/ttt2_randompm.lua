@@ -15,8 +15,7 @@ end
 -- Local variables
 
 local pm_configfile = "pmttt_config.json"
-local pm_terrorists = {}
-local pm_detective = {}
+local pm_models = {}
 
 local cv_enable = CreateConVar("ttt_pm_enable", "1", FCVAR_ARCHIVE)
 local cv_randbodygroups = CreateConVar("ttt_pm_randbodygroups", "1", FCVAR_ARCHIVE)
@@ -38,20 +37,38 @@ function pm_RandomizeBodyGroups(ply)
 	end
 end
 
-function pm_SetPlayerModel(ply)
+function pm_SetPlayerModel(gm, ply)
+	if not IsValid(ply) then return end
 	if not cv_enable:GetBool() then return end
 	
-	local tbl = pm_terrorists
-
+	local tbl = pm_models
+	local role
+	local firstrole
+	
+	-- [bjrkk] in order to maintain compatibility, i'll just do this
+	
+	if TTT2 then
+		role = roles.GetRoleByIndex(ply:GetRole()).name
+		firstrole = roles.GetRoleByIndex(0).name
+	else
+		local ttt1_roles = 
+		{
+			[ROLE_TRAITOR]   = "traitor",
+			[ROLE_INNOCENT]  = "innocent",
+			[ROLE_DETECTIVE] = "detective"
+		}
+	
+		role = ttt1_roles[ply:GetRole()]
+		firstrole = ttt1_roles[ROLE_NONE]
+	end
+	
+	if tbl[role] then tbl = tbl[role]
+	else tbl = tbl[firstrole] or tbl[1] end
+	
 	if cv_ordertype:GetInt() == 0 then ply:SetTTPMValue(ply:UserID()) end
-	local x = ply:GetTTTPMValue() % (#tbl - 1) + 1
 	
-	if ply:IsDetective() then tbl = pm_detective end
-	if tbl[x] and tbl[x] != "" then ply.defaultModel = tbl[x] end
-end
-
-function pm_SetPlayerColor(ply)
-	if not cv_enable:GetBool() then return end
+	local x = ply:GetTTTPMValue() % #tbl + 1
+	if tbl[x] and tbl[x] != "" then ply:SetModel(Model(tbl[x])) end
 	
 	-- [bjrkk] Interesting solution, but this eliminates the need to store the specific bodygroups to use, 
 	--         which either way would make things a bit more complicated (since we'd need to extract the bodygroup info from the model data itself)
@@ -63,14 +80,14 @@ function pm_SetPlayerColor(ply)
 end
 
 function pm_PlayerInitialSpawn(ply, transition)
-	ply:SetTTTPMValue(math.random(#pm_detective + #pm_terrorists))
+	ply:SetTTTPMValue(math.random(2147483647))
 end
 
 function pm_TTTPrepareRound()
 	if cv_ordertype:GetInt() == 2 then
 		local plys = player.GetAll()
 		for i = 1, #plys do
-			plys[i]:SetTTTPMValue(math.random(#pm_detective + #pm_terrorists))
+			plys[i]:SetTTTPMValue(math.random(2147483647))
 		end
 	end
 end
@@ -81,19 +98,41 @@ function pm_PostPlayerDeath(ply)
 		ply.server_ragdoll:SetBodygroup(i, ply:GetBodygroup(i))
 	end
 	ply.server_ragdoll:SetSkin(ply:GetSkin())
-end
+end 
 
+function pm_RoleSync(ply, tmp) hook.Run("PlayerSetModel", ply) end
+
+-- Hooks
 hook.Add("PostPlayerDeath", "pm_PostPlayerDeath", pm_PostPlayerDeath)
-hook.Add("PlayerSetModel", "pm_SetPlayerModel", pm_SetPlayerModel)
 hook.Add("PlayerInitialSpawn", "pm_PlayerInitialSpawn", pm_PlayerInitialSpawn)
-hook.Add("TTTPlayerSetColor", "pm_SetPlayerColor", pm_SetPlayerColor)
 hook.Add("TTTPrepareRound", "pm_TTTPrepareRound", pm_TTTPrepareRound)
+
+hook.Add("PostGamemodeLoaded", "pm_Overrides", 
+	function()
+		-- [bjrkk] the actual function gets called right after the hooks, 
+		--         therefore the gamemode overrides the custom playermodel.
+		--         so let's just override the function
+		gmod:GetGamemode().PlayerSetModel = pm_SetPlayerModel
+		
+		-- [bjrkk] this is really not as nice, but since TTT1 doesn't provide any hooks for role syncing, we just have to hack it through
+		if TTT2 then
+			hook.Add("TTT2SpecialRoleSyncing", "pm_TTT2SpecialRoleSyncing", pm_RoleSync)
+		else
+			hook.Add("TTTBeginRound", "pm_TTTBeginRound", function()
+				local plys = player.GetAll()
+				for i = 1, #plys do
+					pm_RoleSync(plys[i], {})
+				end
+			end)
+		end
+	end
+)
 
 -- Configuration/Init
 
 local pm_default_table = 
 {
-	terror = 
+	innocent = 
 	{
 		Model("models/player/phoenix.mdl"),
 		Model("models/player/arctic.mdl"),
@@ -101,25 +140,31 @@ local pm_default_table =
 		Model("models/player/leet.mdl")
 	},
 	
-	detective =
+	traitor =
 	{
-		Model("models/player/phoenix.mdl"),
 		Model("models/player/arctic.mdl"),
 		Model("models/player/guerilla.mdl"),
-		Model("models/player/leet.mdl")
+	},
+	
+	detective =
+	{
+		Model("models/player/gsg9.mdl"),
+		Model("models/player/gign.mdl"),
+		Model("models/player/sas.mdl"),
+		Model("models/player/urban.mdl")
 	},
 	
 	maps = 
 	{
 		gm_flatgrass =
 		{
-			terror = { Model("models/player/kleiner.mdl") },
+			innocent = { Model("models/player/kleiner.mdl") },
 			detective = { Model("models/player/kleiner.mdl") }
 		},
 		
 		gm_construct =
 		{
-			terror = { Model("models/player/kleiner.mdl") },
+			innocent = { Model("models/player/kleiner.mdl") },
 			detective = { Model("models/player/kleiner.mdl") }
 		}
 	}
@@ -139,7 +184,6 @@ function load_config()
 		return
 	end
 	
-	-- [bjrkk] store table with the terror and detective objects into a variable, this makes the code really simple and i like it
 	local root = tbl
 	
 	if tbl["maps"] != nil then
@@ -149,12 +193,9 @@ function load_config()
 		end
 	end
 	
-	pm_terrorists = root["terror"]
-	pm_detective = root["detective"]
+	pm_models = root
 	
-	PrintTable(pm_terrorists)
-	PrintTable(pm_detective)
-	
+	PrintTable(pm_models)
 	print("[pmTTT] Finished reading config!")
 end
 
