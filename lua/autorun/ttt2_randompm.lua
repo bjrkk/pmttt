@@ -15,15 +15,8 @@ end
 -- Local variables
 
 local pm_configfile = "pmttt_config.json"
--- [bjrkk] Defaults for when the config file fails to load, so yea
-local pm_terrorists =
-{
-	Model("models/player/phoenix.mdl"),
-	Model("models/player/arctic.mdl"),
-	Model("models/player/guerilla.mdl"),
-	Model("models/player/leet.mdl")
-}
-local pm_detective = pm_terrorists
+local pm_terrorists = {}
+local pm_detective = {}
 
 local cv_enable = CreateConVar("ttt_pm_enable", "1", FCVAR_ARCHIVE)
 local cv_randbodygroups = CreateConVar("ttt_pm_randbodygroups", "1", FCVAR_ARCHIVE)
@@ -92,16 +85,50 @@ end
 
 hook.Add("PostPlayerDeath", "pm_PostPlayerDeath", pm_PostPlayerDeath)
 hook.Add("PlayerSetModel", "pm_SetPlayerModel", pm_SetPlayerModel)
+hook.Add("PlayerInitialSpawn", "pm_PlayerInitialSpawn", pm_PlayerInitialSpawn)
 hook.Add("TTTPlayerSetColor", "pm_SetPlayerColor", pm_SetPlayerColor)
 hook.Add("TTTPrepareRound", "pm_TTTPrepareRound", pm_TTTPrepareRound)
-hook.Add("PlayerInitialSpawn", "pm_PlayerInitialSpawn", pm_PlayerInitialSpawn)
 
 -- Configuration/Init
 
+local pm_default_table = 
+{
+	terror = 
+	{
+		Model("models/player/phoenix.mdl"),
+		Model("models/player/arctic.mdl"),
+		Model("models/player/guerilla.mdl"),
+		Model("models/player/leet.mdl")
+	},
+	
+	detective =
+	{
+		Model("models/player/phoenix.mdl"),
+		Model("models/player/arctic.mdl"),
+		Model("models/player/guerilla.mdl"),
+		Model("models/player/leet.mdl")
+	},
+	
+	maps = 
+	{
+		gm_flatgrass =
+		{
+			terror = { Model("models/player/kleiner.mdl") },
+			detective = { Model("models/player/kleiner.mdl") }
+		},
+		
+		gm_construct =
+		{
+			terror = { Model("models/player/kleiner.mdl") },
+			detective = { Model("models/player/kleiner.mdl") }
+		}
+	}
+}
+
 function load_config()
 	if not file.Exists(pm_configfile, "DATA") then
-		print("[pmTTT] Config does not exist!")
-		return
+		print("[pmTTT] Config does not exist! Creating file...")
+		file.Write(pm_configfile, util.TableToJSON(pm_default_table, true))
 	end
 	
 	print("[pmTTT] Reading config...")
@@ -115,9 +142,11 @@ function load_config()
 	-- [bjrkk] store table with the terror and detective objects into a variable, this makes the code really simple and i like it
 	local root = tbl
 	
-	if tbl["maps"][game.GetMap()] then
-		print("[pmTTT] Using " .. game.GetMap() .. " specific config")
-		root = tbl["maps"][game.GetMap()]
+	if tbl["maps"] != nil then
+		if tbl["maps"][game.GetMap()] then
+			print("[pmTTT] Using " .. game.GetMap() .. " specific config")
+			root = tbl["maps"][game.GetMap()]
+		end
 	end
 	
 	pm_terrorists = root["terror"]

@@ -1,34 +1,32 @@
 {
-	"terror":
-	[
-		"models/player/monk.mdl"
-	],
-	"detective":
-	[
-		"models/player/police.mdl"
-	],
-	"maps":
-	{
-		"de_dust2":
-		{
-			"terror": 
-			[
-				"models/player/Group01/female_01.mdl",
-				"models/player/Group01/female_02.mdl",
-				"models/player/Group01/female_03.mdl",
-				"models/player/Group01/female_04.mdl",
-				"models/player/Group01/female_05.mdl",
-				"models/player/Group01/female_06.mdl"
+	"maps": {
+		"gm_construct": {
+			"terror": [
+				"models/player/kleiner.mdl"
 			],
-			"detective":
-			[
-				"models/player/Group01/male_01.mdl",
-				"models/player/Group01/male_02.mdl",
-				"models/player/Group01/male_03.mdl",
-				"models/player/Group01/male_04.mdl",
-				"models/player/Group01/male_05.mdl",
-				"models/player/Group01/male_06.mdl"
+			"detective": [
+				"models/player/kleiner.mdl"
 			]
-		}	
-	}
+		},
+		"gm_flatgrass": {
+			"terror": [
+				"models/player/kleiner.mdl"
+			],
+			"detective": [
+				"models/player/kleiner.mdl"
+			]
+		}
+	},
+	"detective": [
+		"models/player/phoenix.mdl",
+		"models/player/arctic.mdl",
+		"models/player/guerilla.mdl",
+		"models/player/leet.mdl"
+	],
+	"terror": [
+		"models/player/phoenix.mdl",
+		"models/player/arctic.mdl",
+		"models/player/guerilla.mdl",
+		"models/player/leet.mdl"
+	]
 }
