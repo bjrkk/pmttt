@@ -4,9 +4,9 @@
 		"models/player/guerilla.mdl"
 	],
 	"detective": [
-		"models/player/gsg9.mdl",
-		"models/player/gign.mdl",
-		"models/player/sas.mdl",
+		"models/player/gasmask.mdl",
+		"models/player/riot.mdl",
+		"models/player/swat.mdl",
 		"models/player/urban.mdl"
 	],
 	"innocent": [

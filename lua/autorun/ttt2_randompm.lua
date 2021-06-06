@@ -134,38 +134,38 @@ local pm_default_table =
 {
 	innocent = 
 	{
-		Model("models/player/phoenix.mdl"),
-		Model("models/player/arctic.mdl"),
-		Model("models/player/guerilla.mdl"),
-		Model("models/player/leet.mdl")
+		"models/player/phoenix.mdl",
+		"models/player/arctic.mdl",
+		"models/player/guerilla.mdl",
+		"models/player/leet.mdl"
 	},
 	
 	traitor =
 	{
-		Model("models/player/arctic.mdl"),
-		Model("models/player/guerilla.mdl"),
+		"models/player/arctic.mdl",
+		"models/player/guerilla.mdl",
 	},
 	
 	detective =
 	{
-		Model("models/player/gsg9.mdl"),
-		Model("models/player/gign.mdl"),
-		Model("models/player/sas.mdl"),
-		Model("models/player/urban.mdl")
+		"models/player/gasmask.mdl",
+		"models/player/riot.mdl",
+		"models/player/swat.mdl",
+		"models/player/urban.mdl"
 	},
 	
 	maps = 
 	{
 		gm_flatgrass =
 		{
-			innocent = { Model("models/player/kleiner.mdl") },
-			detective = { Model("models/player/kleiner.mdl") }
+			innocent = { "models/player/kleiner.mdl" },
+			detective = { "models/player/kleiner.mdl" }
 		},
 		
 		gm_construct =
 		{
-			innocent = { Model("models/player/kleiner.mdl") },
-			detective = { Model("models/player/kleiner.mdl") }
+			innocent = { "models/player/kleiner.mdl" },
+			detective = { "models/player/kleiner.mdl" }
 		}
 	}
 }
