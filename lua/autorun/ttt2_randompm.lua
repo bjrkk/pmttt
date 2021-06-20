@@ -48,8 +48,8 @@ function pm_SetPlayerModel(gm, ply)
 	-- [bjrkk] in order to maintain compatibility, i'll just do this
 	
 	if TTT2 then
-		role = roles.GetRoleByIndex(ply:GetRole()).name
-		firstrole = roles.GetRoleByIndex(0).name
+		role = roles.GetByIndex(ply:GetRole()).name
+		firstrole = roles.GetByIndex(0).name
 	else
 		local ttt1_roles = 
 		{
@@ -65,10 +65,13 @@ function pm_SetPlayerModel(gm, ply)
 	if tbl[role] then tbl = tbl[role]
 	else tbl = tbl[firstrole] or tbl[1] end
 	
-	if cv_ordertype:GetInt() == 0 then ply:SetTTPMValue(ply:UserID()) end
+	if cv_ordertype:GetInt() == 0 then ply:SetTTTPMValue(ply:UserID()) end
 	
-	local x = ply:GetTTTPMValue() % #tbl + 1
-	if tbl[x] and tbl[x] != "" then ply:SetModel(Model(tbl[x])) end
+	local x = math.floor(ply:GetTTTPMValue() * #tbl) + 1
+	if tbl[x] and tbl[x] != "" then 
+		if util.IsValidModel(tbl[x]) then ply:SetModel(Model(tbl[x]))
+		else print("[pmTTT] Model '" .. tbl[x] "' is not valid!") end
+	end
 	
 	-- [bjrkk] Interesting solution, but this eliminates the need to store the specific bodygroups to use, 
 	--         which either way would make things a bit more complicated (since we'd need to extract the bodygroup info from the model data itself)
@@ -80,14 +83,14 @@ function pm_SetPlayerModel(gm, ply)
 end
 
 function pm_PlayerInitialSpawn(ply, transition)
-	ply:SetTTTPMValue(math.random(2147483647))
+	ply:SetTTTPMValue(math.random())
 end
 
 function pm_TTTPrepareRound()
 	if cv_ordertype:GetInt() == 2 then
 		local plys = player.GetAll()
 		for i = 1, #plys do
-			plys[i]:SetTTTPMValue(math.random(2147483647))
+			plys[i]:SetTTTPMValue(math.random())
 		end
 	end
 end
@@ -196,6 +199,16 @@ function load_config()
 	pm_models = root
 	
 	PrintTable(pm_models)
+	print("[pmTTT] Verifying models...")
+	
+	for x=1, #root do
+		for y=1, #root[x] do
+			if !util.IsValidModel(root[x][y]) then
+				print("[pmTTT] WARNING: Model " .. root[x][y] .. " is not valid.")
+			end
+		end
+	end
+	
 	print("[pmTTT] Finished reading config!")
 end
 
