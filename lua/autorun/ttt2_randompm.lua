@@ -37,7 +37,11 @@ function pm_RandomizeBodyGroups(ply)
 	end
 end
 
+local pm_OriginalSetPlayerModel;
+
 function pm_SetPlayerModel(gm, ply)
+	pm_OriginalSetPlayerModel(gm, ply)
+
 	if not IsValid(ply) then return end
 	if not cv_enable:GetBool() then return end
 	
@@ -115,6 +119,7 @@ hook.Add("PostGamemodeLoaded", "pm_Overrides",
 		-- [bjrkk] the actual function gets called right after the hooks, 
 		--         therefore the gamemode overrides the custom playermodel.
 		--         so let's just override the function
+		pm_OriginalSetPlayerModel = gmod:GetGamemode().PlayerSetModel
 		gmod:GetGamemode().PlayerSetModel = pm_SetPlayerModel
 		
 		-- [bjrkk] this is really not as nice, but since TTT1 doesn't provide any hooks for role syncing, we just have to hack it through
