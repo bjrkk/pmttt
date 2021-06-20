@@ -74,7 +74,7 @@ function pm_SetPlayerModel(gm, ply)
 	local x = math.floor(ply:GetTTTPMValue() * #tbl) + 1
 	if tbl[x] and tbl[x] != "" then 
 		if util.IsValidModel(tbl[x]) then ply:SetModel(Model(tbl[x]))
-		else print("[pmTTT] Model '" .. tbl[x] "' is not valid!") end
+		else print("[pmTTT] Model '" .. tbl[x] .. "' is not valid!") end
 	end
 	
 	-- [bjrkk] Interesting solution, but this eliminates the need to store the specific bodygroups to use, 
