@@ -52,8 +52,10 @@ function pm_SetPlayerModel(gm, ply)
 	-- [bjrkk] in order to maintain compatibility, i'll just do this
 	
 	if TTT2 then
-		role = roles.GetByIndex(ply:GetRole()).name
+		role = roles.GetByIndex(ply:GetSubRole()).name
 		firstrole = roles.GetByIndex(0).name
+		
+		if !tbl[role] then role = roles.GetByIndex(ply:GetRole()).name end
 	else
 		local ttt1_roles = 
 		{
