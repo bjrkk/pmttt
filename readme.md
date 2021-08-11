@@ -6,8 +6,9 @@ A stupid simple GMOD Lua script dedicated to having custom playermodels for TTT/
 ttt_pm_enable <1/0>             - Enable or disable pmTTT
 ttt_pm_randbodygroups <1/0>     - Picks random bodygroups depending on the order type
 ttt_pm_randskin <1/0>           - Picks a random skin value depending on the order type
-ttt_pm_ordertype <-1/0/1/2>     - This sets the order type for playermodels. 
-                                  -1 will always pick the first playermodel from the list
+ttt_pm_ordertype <-2/-1/0/1/2>     - This sets the order type for playermodels. 
+                                  -2: picks a random playermodel each round, but every player shares one
+                                  -1: picks the first playermodel listed in their role, every player shares one
                                    0 will always pick the playermodel depending on the players UserID
                                    1 will pick the randomly picked playermodel from when the player initially spawned.
                                    2 will pick a new random playermodel for every player on a new round.

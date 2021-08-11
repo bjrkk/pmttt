@@ -93,8 +93,14 @@ function pm_PlayerInitialSpawn(ply, transition)
 end
 
 function pm_TTTPrepareRound()
-	if cv_ordertype:GetInt() == 2 then
-		local plys = player.GetAll()
+	local plys = player.GetAll()
+	
+	if cv_ordertype:GetInt() == -2 then
+		local rand = math.random()
+		for i = 1, #plys do
+			plys[i]:SetTTTPMValue(rand)
+		end
+	elseif cv_ordertype:GetInt() == 2 then
 		for i = 1, #plys do
 			plys[i]:SetTTTPMValue(math.random())
 		end
